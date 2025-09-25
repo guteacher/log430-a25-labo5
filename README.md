@@ -279,8 +279,3 @@ def payment_notification_v2():
 
 - Un fichier .zip contenant l'intégralité du code source du projet Labo 05.
 - Un rapport en .pdf répondant aux questions présentées dans ce document. Il est obligatoire d'illustrer vos réponses avec du code ou des captures d'écran/terminal.
-- Les configurations KrakenD (krakend.json) et les tests Locust utilisés.
-- Des captures d'écran montrant :
-  - Les métriques de rate limiting dans Locust
-  - Les erreurs de timeout (503) de KrakenD
-  - Les statistiques KrakenD sur `/__stats`
