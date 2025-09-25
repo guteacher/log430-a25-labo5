@@ -1,0 +1,317 @@
+{
+	"info": {
+		"_postman_id": "588b719d-8fcd-457b-8fb2-5517747e9bac",
+		"name": "LOG430 Labo03",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6052895"
+	},
+	"item": [
+		{
+			"name": "Product stocks",
+			"item": [
+				{
+					"name": "/product stocks",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": 1,\n    \"quantity\": 56\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stocks",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stocks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stocks/:id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/stocks/99",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stocks",
+								"99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stocks/reports/overview Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/stocks/reports/overview",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stocks",
+								"reports",
+								"overview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/stocks/graphql",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "{\n  product(id: \"1\") {\n    id\n    name\n    quantity\n  }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/stocks/graphql",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"stocks",
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "/orders",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 2,\n    \"items\": [{\"product_id\": 1, \"quantity\": 10}]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/orders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/1",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/reports/highest_spenders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/reports/highest_spenders",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								"reports",
+								"highest_spenders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/orders/reports/best_sellers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/orders/reports/best_sellers",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"orders",
+								"reports",
+								"best_sellers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "/products",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Some item\",\n    \"sku\": \"ABCDEF1234\",\n    \"price\": 5.55\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/products",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/products/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/products/99",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"products",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jane Doe\",\n    \"email\": \"jd@example.ca\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/users/:id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/99",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Observability",
+			"item": [
+				{
+					"name": "/health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/health",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:5000",
+			"type": "default"
+		}
+	]
+}
