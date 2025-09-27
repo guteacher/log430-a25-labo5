@@ -73,7 +73,7 @@ def post_orders():
     """
     
     response = requests.post(
-        'http://payment-service:8080/payment/create-link',
+        'http://localhost:5009/payment/add',
         data=payment_request,
         headers={'Content-Type': 'application/xml'}
     )
