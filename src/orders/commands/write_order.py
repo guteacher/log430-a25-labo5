@@ -108,15 +108,17 @@ def request_payment_link(order_id, total_amount, user_id):
             <user-id>{user_id}</user-id>
         </payment-request>
     """
-    
+    print("Make request to /payments/add")
     response = requests.post(
         'http://payments_web_service:5009/payments/add',
         data=payment_request,
         headers={'Content-Type': 'application/xml'}
     )
+    print(f"Response from payments_service: {response.status_code}")
     if response.status_code == 200:
         root = ET.fromstring(response.text)
         payment_id = root.find('payment-id').text
+        print(f"Payment ID: {payment_id}")
 
     return f"http://payments_web_service:5009/payments/pay/{payment_id}" 
 
