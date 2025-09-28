@@ -33,7 +33,7 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Order items table
+-- Order items
 DROP TABLE IF EXISTS order_items;
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,

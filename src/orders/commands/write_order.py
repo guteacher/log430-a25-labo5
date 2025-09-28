@@ -161,4 +161,3 @@ def delete_order_from_redis(order_id):
     """Delete order from Redis"""
     r = get_redis_conn()
     r.delete(f"order:{order_id}")
-

@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify
 from orders.controllers.order_controller import create_order, remove_order, get_order, get_report_highest_spending_users, get_report_best_selling_products, update_order
 from orders.controllers.user_controller import create_user, remove_user, get_user
 from stocks.controllers.product_controller import create_product, remove_product, get_product
-from stocks.controllers.stock_controller import  get_stock_overview
+from stocks.controllers.stock_controller import get_stock, set_stock, get_stock_overview
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
  
 app = Flask(__name__)
@@ -55,10 +55,10 @@ def delete_users_id(user_id):
     """Delete a user with a given user_id"""
     return remove_user(user_id)
 
-@app.put('/orders')
-def put_orders():
-    """Update one or more order fields"""
-    return update_order(request)
+@app.post('/stocks')
+def post_stocks():
+    """Set product stock based on information on request body"""
+    return set_stock(request)
 
 # Read routes (Queries) 
 @app.get('/orders/<int:order_id>')
@@ -75,6 +75,11 @@ def get_product_id(product_id):
 def get_user_id(user_id):
     """Get user with a given user_id"""
     return get_user(user_id)
+
+@app.get('/stocks/<int:product_id>')
+def get_stocks(product_id):
+    """Get product stocks by product_id"""
+    return get_stock(product_id)
 
 @app.get('/orders/reports/highest-spenders')
 def get_orders_highest_spending_users():
@@ -106,6 +111,12 @@ def graphql_supplier():
         'data': result.data,
         'errors': [str(e) for e in result.errors] if result.errors else None
     })
+
+# Integration
+@app.put('/orders')
+def put_orders():
+    """Update one or more order fields"""
+    return update_order(request)
 
 @app.route("/metrics")
 def metrics():
