@@ -1,21 +1,13 @@
 services:
   store_manager:
     build: .
+    container_name: store_manager 
     volumes:
       - .:/app
     ports:
       - "5000:5000"
-    environment:
-      DB_HOST: mysql        
-      DB_PORT: 3306
-      DB_USER: labo04
-      DB_PASSWORD: labo04
-      DB_NAME: labo04_db
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_DB: 0
     networks:
-      - labo04-network
+      - labo05-network
     depends_on:
       - mysql
       - redis
@@ -30,7 +22,7 @@ services:
      depends_on:
       - store_manager
      networks:
-       - labo04-network
+       - labo05-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -47,7 +39,7 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--web.enable-lifecycle'
     networks:
-      - labo04-network
+      - labo05-network
     depends_on:
       - store_manager
 
@@ -60,7 +52,7 @@ services:
       MYSQL_USER: labo04
       MYSQL_PASSWORD: labo04
     networks:
-      - labo04-network
+      - labo05-network
     ports:
       - "3306:3306"
     volumes:
@@ -71,13 +63,13 @@ services:
     image: redis:7
     restart: unless-stopped
     networks:
-      - labo04-network
+      - labo05-network
     ports:
       - "6379:6379"
 
 networks:
-  labo04-network:
-    driver: bridge
+  labo05-network:
+    external: true
 
 volumes:
   mysql_data:

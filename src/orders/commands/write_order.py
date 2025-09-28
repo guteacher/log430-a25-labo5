@@ -4,7 +4,7 @@ SPDX - License - Identifier: LGPL - 3.0 - or -later
 Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 """
 import json
-from urllib import request
+import requests
 import xml.etree.ElementTree as ET
 from orders.models.order import Order
 from stocks.models.product import Product
@@ -43,8 +43,9 @@ def add_order(user_id: int, items: list):
                 'unit_price': unit_price
             })
 
-        payment_link = request_payment_link(new_order)
-        new_order = Order(user_id=user_id, total_amount=total_amount, payment_link=payment_link)
+        print(1)
+        new_order = Order(user_id=user_id, total_amount=total_amount, payment_link=None)
+        new_order.payment_link = request_payment_link(new_order)
         session.add(new_order)
         session.flush() 
         
@@ -107,8 +108,8 @@ def request_payment_link(new_order):
         </paymentRequest>
     """
     
-    response = request.post(
-        'http://localhost:5009/payment/add',
+    response = requests.post(
+        'http://payments_web_service:5009/payment/add',
         data=payment_request,
         headers={'Content-Type': 'application/xml'}
     )
