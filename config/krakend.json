@@ -1,0 +1,55 @@
+{
+  "version": 3,
+  "name": "Store Manager API Gateway",
+  "timeout": "5s",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "port": 8080,
+  "endpoints": [
+    {
+      "endpoint": "/api/orders",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/orders",
+          "host": ["http://store_manager:5000"],
+          "timeout": "5s"
+        }
+      ],
+      "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 10,
+          "capacity": 10
+        }
+      }
+    },
+    {
+      "endpoint": "/api/orders",
+      "method": "POST", 
+      "backend": [
+        {
+          "url_pattern": "/orders",
+          "host": ["http://store_manager:5000"],
+          "timeout": "5s"
+        }
+      ],
+      "extra_config": {
+        "qos/ratelimit/router": {
+          "max_rate": 10,
+          "capacity": 10
+        }
+      }
+    },
+    {
+      "endpoint": "/api/test/slow",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/test/slow",
+          "host": ["http://store_manager:5000"],
+          "timeout": "5s"
+        }
+      ]
+    }
+  ]
+}

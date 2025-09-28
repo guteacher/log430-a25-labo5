@@ -69,6 +69,18 @@ services:
     ports:
       - "6379:6379"
 
+  krakend:
+    image: devopsfaith/krakend:2.4
+    container_name: krakend-gateway
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/krakend.json:/etc/krakend/krakend.json
+    networks:
+      - labo05-network
+    depends_on:
+      - store_manager
+
 networks:
   labo05-network:
     external: true
