@@ -199,50 +199,6 @@ Testez différents délais à travers KrakenD :
 
 > 💡 **Question 4** : Que se passe-t-il quand vous faites une requête avec un délai supérieur au timeout configuré (5 secondes) ? Quelle est l'importance du timeout dans une architecture de microservices ? Justifiez votre réponse avec des exemples pratiques.
 
-### 6. Analysez les métriques de l'API Gateway
-KrakenD fournit des métriques automatiquement. Vous pouvez les visualiser en activant l'endpoint de métriques en ajoutant cette configuration dans votre `krakend.json` :
-
-```json
-{
-  "extra_config": {
-    "telemetry/metrics": {
-      "collection_time": "60s",
-      "proxy_disabled": false,
-      "router_disabled": false,
-      "backend_disabled": false,
-      "endpoint_disabled": false,
-      "listen_address": ":8090"
-    }
-  }
-}
-```
-
-Redémarrez KrakenD et accédez aux métriques sur `http://localhost:8090/__stats`.
-
-> 💡 **Question 5** : Quelles métriques l'API Gateway vous fournit-il qui ne seraient pas disponibles en accédant directement au service ? Comment ces métriques peuvent-elles aider dans le monitoring d'une architecture de microservices ?
-
-### 7. Transformation SOA vers SBA
-Créez une nouvelle version de l'endpoint de notification qui accepte du JSON au lieu de XML :
-
-```python
-@app.post('/payment/notification/v2')
-def payment_notification_v2():
-    """Version SBA de la notification de paiement"""
-    try:
-        data = request.get_json()
-        order_id = data['orderId']
-        payment_status = data['status']
-        
-        # Même logique de mise à jour mais avec JSON
-        # ... code ...
-        
-        return {"status": "notification received"}, 200
-    except Exception as e:
-        return {"error": str(e)}, 400
-```
-
-> 💡 **Question 6** : Comparez les deux approches (SOA avec XML vs SBA avec JSON). Quels sont les avantages et inconvénients de chaque approche en termes de performance, lisibilité, et maintenabilité ? Justifiez avec des exemples de code.
-
 ## 📦 Livrables
 
 - Un fichier .zip contenant l'intégralité du code source du projet Labo 05.
