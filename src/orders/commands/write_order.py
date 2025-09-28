@@ -5,7 +5,7 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 """
 import json
 import requests
-import xml.etree.ElementTree as ET
+from flask import request
 from orders.models.order import Order
 from stocks.models.product import Product
 from sqlalchemy.exc import SQLAlchemyError
@@ -101,26 +101,27 @@ def modify_order(order_id: int, is_paid: bool):
 
 def request_payment_link(order_id, total_amount, user_id):
     payment_id = 0
-    payment_request = f"""
-        <payment-request>
-            <order-id>{order_id}</order-id>
-            <amount>{total_amount}</amount>
-            <user-id>{user_id}</user-id>
-        </payment-request>
-    """
-    print("Make request to /payments/add")
-    response = requests.post(
-        'http://payments_web_service:5009/payments/add',
-        data=payment_request,
-        headers={'Content-Type': 'application/xml'}
-    )
-    print(f"Response from payments_service: {response.status_code}")
-    if response.status_code == 200:
-        root = ET.fromstring(response.text)
-        payment_id = root.find('payment-id').text
-        print(f"Payment ID: {payment_id}")
+    payment_request = {
+        "user_id": user_id,
+        "order_id": order_id,
+        "total_amount": total_amount
+    }
 
-    return f"http://payments_web_service:5009/payments/pay/{payment_id}" 
+    print("Requête à POST /payments")
+    response = requests.post(
+        'http://payments_web_service:5009/payments',
+        json=payment_request,
+        headers={'Content-Type': 'application/json'}
+    )
+
+    if response.status_code == 201:
+        data = response.json() 
+        payment_id = data['payment_id']
+        print(f"ID paiement: {payment_id}")
+    else:
+        print("Erreur:", response.status_code, response.text)
+
+    return f"http://payments_web_service:5009/payments/process/{payment_id}" 
 
 def delete_order(order_id: int):
     """Delete order in MySQL, keep Redis in sync"""

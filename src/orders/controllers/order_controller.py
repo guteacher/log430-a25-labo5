@@ -24,11 +24,11 @@ def update_order(request):
     payload = request.get_json() or {}
     order_id = payload.get('order_id')
     is_paid = payload.get('is_paid')
-    print(f"Update order: {order_id}, payment status={is_paid}")
+    print(f"Mettre à jour la commande {order_id}, status={is_paid}")
 
     try:
         status = modify_order(order_id, is_paid=is_paid)
-        print("Is updated?", status)
+        print("Statut actuel", status)
         return jsonify({'updated': status}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
