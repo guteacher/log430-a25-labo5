@@ -112,7 +112,7 @@ def graphql_supplier():
         'errors': [str(e) for e in result.errors] if result.errors else None
     })
 
-# Integration
+# Integration with payment service
 @app.put('/orders')
 def put_orders():
     """Update one or more order fields"""

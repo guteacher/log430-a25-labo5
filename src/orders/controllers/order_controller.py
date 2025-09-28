@@ -19,7 +19,7 @@ def create_order(request):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-def update_order(request, order_id):
+def update_order(request):
     """Update order, use WriteOrder model"""
     payload = request.get_json() or {}
     order_id = payload.get('order_id')
@@ -27,6 +27,7 @@ def update_order(request, order_id):
 
     try:
         status = modify_order(order_id, is_paid=is_paid)
+        print("updated?", status)
         return jsonify({'updated': status}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

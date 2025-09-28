@@ -114,10 +114,8 @@ def request_payment_link(order_id, total_amount, user_id):
         data=payment_request,
         headers={'Content-Type': 'application/xml'}
     )
-    print(response.status_code)
     if response.status_code == 200:
         root = ET.fromstring(response.text)
-        print(root.find('payment-id').text)
         payment_id = root.find('payment-id').text
 
     return f"http://payments_web_service:5009/payments/pay/{payment_id}" 

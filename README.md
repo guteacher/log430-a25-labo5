@@ -56,37 +56,17 @@ ALTER TABLE orders ADD COLUMN payment_link VARCHAR(500);
 
 Ensuite, modifiez la fonction de création de commande :
 ```python
-import requests
-import xml.etree.ElementTree as ET
-
-@app.post('/orders')
-def post_orders():
-    # ... code existant pour créer la commande ...
-    
-    # Demander un lien de paiement au service SOA
+def request_payment_link(order_id, total_amount, user_id):
+    payment_id = 0
     payment_request = f"""
-    <paymentRequest>
-        <orderId>{order_id}</orderId>
-        <amount>{total_amount}</amount>
-        <userId>{user_id}</userId>
-    </paymentRequest>
+        <payment-request>
+            <order-id>{order_id}</order-id>
+            <amount>{total_amount}</amount>
+            <user-id>{user_id}</user-id>
+        </payment-request>
     """
-    
-    response = requests.post(
-        'http://localhost:5009/payment/add',
-        data=payment_request,
-        headers={'Content-Type': 'application/xml'}
-    )
-    
-    if response.status_code == 200:
-        # Parser la réponse XML
-        root = ET.fromstring(response.text)
-        payment_link = root.find('paymentLink').text
-        
-        # Sauvegarder le lien dans la base de données
-        # ... code pour UPDATE de la table orders ...
-    
-    # ... reste du code ...
+    # POST http://payments_web_service:5009/payments/add
+    # ATTENTION: n'utilisez pas localhost, car localhost n'existe pas dans Docker, seulement les hostnames des services
 ```
 
 > 💡 **Question 1** : Quelle est la différence principale entre la communication SOA (avec XML) et SBA (avec JSON/REST) que vous observez dans cette intégration ? Justifiez votre réponse avec des exemples de code.
@@ -95,22 +75,10 @@ def post_orders():
 Créez un nouvel endpoint dans `store_manager.py` pour recevoir les notifications du service de paiement :
 
 ```python
-@app.post('/payment/notification')
-def payment_notification():
-    # Recevoir la notification XML du service de paiement
-    xml_data = request.data.decode('utf-8')
-    
-    try:
-        root = ET.fromstring(xml_data)
-        order_id = root.find('orderId').text
-        payment_status = root.find('status').text  # 'SUCCESS' ou 'FAILED'
-        
-        # Mettre à jour le statut de la commande dans la base de données
-        # ... code pour UPDATE ...
-        
-        return {"status": "notification received"}, 200
-    except Exception as e:
-        return {"error": str(e)}, 400
+@app.put('/orders')
+def put_orders():
+    """Update one or more order fields"""
+    return update_order(request)
 ```
 
 > 💡 **Question 2** : Pourquoi cette approche n'est-elle pas un "vrai" webhook ? Quelles sont les limitations de cette implémentation par rapport à un système de webhook moderne ?
