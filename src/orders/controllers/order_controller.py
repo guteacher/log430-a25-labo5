@@ -5,7 +5,7 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 """
 
 from flask import jsonify
-from orders.commands.write_order import add_order, delete_order
+from orders.commands.write_order import add_order, delete_order, modify_order
 from orders.queries.read_order import get_order_by_id, get_best_selling_products, get_highest_spending_users
 
 def create_order(request):
@@ -16,6 +16,18 @@ def create_order(request):
     try:
         order_id = add_order(user_id, items)
         return jsonify({'order_id': order_id}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+def update_order(request, order_id):
+    """Update order, use WriteOrder model"""
+    payload = request.get_json() or {}
+    order_id = payload.get('order_id')
+    is_paid = payload.get('is_paid')
+    
+    try:
+        status = modify_order(order_id, is_paid=is_paid)
+        return jsonify({'updated': status}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

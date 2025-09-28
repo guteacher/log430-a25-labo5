@@ -4,8 +4,11 @@ SPDX - License - Identifier: LGPL - 3.0 - or -later
 Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 """
 import json
+from urllib import request
+import xml.etree.ElementTree as ET
 from orders.models.order import Order
 from stocks.models.product import Product
+from sqlalchemy.exc import SQLAlchemyError
 from orders.models.order_item import OrderItem
 from stocks.commands.write_stock import check_in_items_to_stock, check_out_items_from_stock, update_stock_redis
 from db import get_sqlalchemy_session, get_redis_conn
@@ -40,7 +43,8 @@ def add_order(user_id: int, items: list):
                 'unit_price': unit_price
             })
 
-        new_order = Order(user_id=user_id, total_amount=total_amount)
+        payment_link = request_payment_link(new_order)
+        new_order = Order(user_id=user_id, total_amount=total_amount, payment_link=payment_link)
         session.add(new_order)
         session.flush() 
         
@@ -63,13 +67,57 @@ def add_order(user_id: int, items: list):
         # Insert order into Redis
         update_stock_redis(order_items, '-')
         add_order_to_redis(order_id, user_id, total_amount, items)
-        return order_id
+        return new_order
 
     except Exception as e:
         session.rollback()
         raise e
     finally:
         session.close()
+
+def modify_order(order_id: int, is_paid: bool):
+    session = get_sqlalchemy_session()
+    try:
+        order = session.query(Order).filter(Order.id == order_id).first()
+
+        if order is not None and is_paid is not None:
+            order.is_paid = is_paid
+
+        session.commit()
+        session.refresh(order)
+        return True
+    except SQLAlchemyError as e:
+        session.rollback()
+        print(e)
+        return False
+    except Exception as e:
+        session.rollback()
+        print(e)
+        return False
+    finally:
+        session.close()
+
+def request_payment_link(new_order):
+    payment_link = ""
+    payment_request = f"""
+        <paymentRequest>
+            <orderId>{new_order.id}</orderId>
+            <amount>{new_order.total_amount}</amount>
+            <userId>{new_order.user_id}</userId>
+        </paymentRequest>
+    """
+    
+    response = request.post(
+        'http://localhost:5009/payment/add',
+        data=payment_request,
+        headers={'Content-Type': 'application/xml'}
+    )
+    
+    if response.status_code == 200:
+        root = ET.fromstring(response.text)
+        payment_link = root.find('paymentLink').text
+
+    return payment_link
 
 def delete_order(order_id: int):
     """Delete order in MySQL, keep Redis in sync"""

@@ -6,10 +6,10 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 from graphene import Schema
 from stocks.schemas.query import Query
 from flask import Flask, request, jsonify
-from orders.controllers.order_controller import create_order, remove_order, get_order, get_report_highest_spending_users, get_report_best_selling_products
+from orders.controllers.order_controller import create_order, remove_order, get_order, get_report_highest_spending_users, get_report_best_selling_products, update_order
 from orders.controllers.user_controller import create_user, remove_user, get_user
 from stocks.controllers.product_controller import create_product, remove_product, get_product
-from stocks.controllers.stock_controller import get_stock, set_stock, get_stock_overview
+from stocks.controllers.stock_controller import  get_stock_overview
 from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
  
 app = Flask(__name__)
@@ -35,6 +35,16 @@ def delete_orders_id(order_id):
     """Delete an order with a given order_id"""
     return remove_order(order_id)
 
+@app.post('/products')
+def post_products():
+    """Create a new product based on information on request body"""
+    return create_product(request)
+
+@app.delete('/products/<int:product_id>')
+def delete_products_id(product_id):
+    """Delete a product with a given product_id"""
+    return remove_product(product_id)
+
 @app.post('/users')
 def post_users():
     """Create a new user based on information on request body"""
@@ -45,11 +55,21 @@ def delete_users_id(user_id):
     """Delete a user with a given user_id"""
     return remove_user(user_id)
 
+@app.put('/orders')
+def put_orders():
+    """Update one or more order fields"""
+    return update_order(request)
+
 # Read routes (Queries) 
 @app.get('/orders/<int:order_id>')
 def get_order_id(order_id):
     """Get order with a given order_id"""
     return get_order(order_id)
+
+@app.get('/products/<int:product_id>')
+def get_product_id(product_id):
+    """Get product with a given product_id"""
+    return get_product(product_id)
 
 @app.get('/users/<int:user_id>')
 def get_user_id(user_id):
