@@ -27,7 +27,7 @@ CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     total_amount DECIMAL(12,2) NOT NULL,
-    payment_link VARCHAR(40),
+    payment_link VARCHAR(100),
     is_paid BOOLEAN,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

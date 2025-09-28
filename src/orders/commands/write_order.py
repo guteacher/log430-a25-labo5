@@ -43,14 +43,15 @@ def add_order(user_id: int, items: list):
                 'unit_price': unit_price
             })
 
-        print(1)
         new_order = Order(user_id=user_id, total_amount=total_amount, payment_link=None)
-        new_order.payment_link = request_payment_link(new_order)
         session.add(new_order)
-        session.flush() 
-        
+        session.flush()   
+
         order_id = new_order.id
 
+        new_order.payment_link = request_payment_link(new_order.id, total_amount, user_id)
+        session.flush()  
+        
         for item in order_items:
             order_item = OrderItem(
                 order_id=order_id,
@@ -67,8 +68,8 @@ def add_order(user_id: int, items: list):
 
         # Insert order into Redis
         update_stock_redis(order_items, '-')
-        add_order_to_redis(order_id, user_id, total_amount, items)
-        return new_order
+        add_order_to_redis(order_id, user_id, total_amount, items, new_order.payment_link)
+        return order_id
 
     except Exception as e:
         session.rollback()
@@ -98,27 +99,28 @@ def modify_order(order_id: int, is_paid: bool):
     finally:
         session.close()
 
-def request_payment_link(new_order):
-    payment_link = ""
+def request_payment_link(order_id, total_amount, user_id):
+    payment_id = 0
     payment_request = f"""
-        <paymentRequest>
-            <orderId>{new_order.id}</orderId>
-            <amount>{new_order.total_amount}</amount>
-            <userId>{new_order.user_id}</userId>
-        </paymentRequest>
+        <payment-request>
+            <order-id>{order_id}</order-id>
+            <amount>{total_amount}</amount>
+            <user-id>{user_id}</user-id>
+        </payment-request>
     """
     
     response = requests.post(
-        'http://payments_web_service:5009/payment/add',
+        'http://payments_web_service:5009/payments/add',
         data=payment_request,
         headers={'Content-Type': 'application/xml'}
     )
-    
+    print(response.status_code)
     if response.status_code == 200:
         root = ET.fromstring(response.text)
-        payment_link = root.find('paymentLink').text
+        print(root.find('payment-id').text)
+        payment_id = root.find('payment-id').text
 
-    return payment_link
+    return f"http://payments_web_service:5009/payments/pay/{payment_id}" 
 
 def delete_order(order_id: int):
     """Delete order in MySQL, keep Redis in sync"""
@@ -146,7 +148,7 @@ def delete_order(order_id: int):
     finally:
         session.close()
 
-def add_order_to_redis(order_id, user_id, total_amount, items):
+def add_order_to_redis(order_id, user_id, total_amount, items, payment_link):
     """Insert order to Redis"""
     r = get_redis_conn()
     r.hset(
@@ -154,7 +156,8 @@ def add_order_to_redis(order_id, user_id, total_amount, items):
         mapping={
             "user_id": user_id,
             "total_amount": float(total_amount),
-            "items": json.dumps(items)
+            "items": json.dumps(items),
+            "payment_link": payment_link
         }
     )
 

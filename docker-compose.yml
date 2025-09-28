@@ -2,6 +2,8 @@ services:
   store_manager:
     build: .
     container_name: store_manager 
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
     ports:
