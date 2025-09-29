@@ -5,8 +5,8 @@
 
 ## 🎯 Objectifs d'apprentissage
 - Apprendre à communiquer avec un microservice déjà existant
-- Apprendre à configurer et utiliser krakend, un API Gateway
-- Découvrir les configurations de `timeout` (limitation du temps de réponse) et `rate limiting` (limitation du nombre de requêtes) dans krakend
+- Apprendre à configurer et utiliser KrakenD, un API Gateway
+- Découvrir les configurations de `timeout` (limitation du temps de réponse) et `rate limiting` (limitation du nombre de requêtes) dans KrakenD
 
 ## ⚙️ Setup
 

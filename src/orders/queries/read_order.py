@@ -15,10 +15,10 @@ def get_order_by_id(order_id):
     r = get_redis_conn()
     raw_order = r.hgetall(f"order:{order_id}")
     order = {}
-    for k, v in raw_order.items():
-        key = k.decode('utf-8') if isinstance(k, bytes) else k
-        value = v.decode('utf-8') if isinstance(v, bytes) else v
-        order[key] = value
+    for key, value in raw_order.items():
+        found_key = key.decode('utf-8') if isinstance(key, bytes) else key
+        found_value = value.decode('utf-8') if isinstance(value, bytes) else value
+        order[found_key] = found_value
     return order
 
 def get_highest_spending_users_mysql():
@@ -137,7 +137,9 @@ def get_best_selling_products_redis():
     return result
 
 def get_highest_spending_users():
+    """ Get highest spending users report """
     return get_highest_spending_users_redis()
 
 def get_best_selling_products():
+    """ Get best selling products report """
     return get_best_selling_products_redis()
