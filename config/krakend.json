@@ -7,7 +7,7 @@
   "port": 8080,
   "endpoints": [
     {
-      "endpoint": "/api/orders",
+      "endpoint": "/store-api/orders",
       "method": "GET",
       "backend": [
         {
@@ -24,12 +24,12 @@
       }
     },
     {
-      "endpoint": "/api/orders",
+      "endpoint": "/payments-api/payments",
       "method": "POST", 
       "backend": [
         {
-          "url_pattern": "/orders",
-          "host": ["http://store_manager:5000"],
+          "url_pattern": "/payments",
+          "host": ["http://payments_web_service:5009"],
           "timeout": "5s"
         }
       ],
@@ -41,7 +41,7 @@
       }
     },
     {
-      "endpoint": "/api/test/slow",
+      "endpoint": "/store-api/test/slow",
       "method": "GET",
       "backend": [
         {

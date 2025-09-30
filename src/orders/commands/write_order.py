@@ -109,7 +109,7 @@ def request_payment_link(order_id, total_amount, user_id):
 
     print("Requête à POST /payments")
     response = requests.post(
-        'http://payments_web_service:5009/payments',
+        'http://api-gateway:8080/payments-api/payments',
         json=payment_request,
         headers={'Content-Type': 'application/json'}
     )
@@ -121,7 +121,7 @@ def request_payment_link(order_id, total_amount, user_id):
     else:
         print("Erreur:", response.status_code, response.text)
 
-    return f"http://payments_web_service:5009/payments/process/{payment_id}" 
+    return f"http://api-gateway:8080/payments-api/payments/process/{payment_id}" 
 
 def delete_order(order_id: int):
     """Delete order in MySQL, keep Redis in sync"""
