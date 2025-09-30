@@ -1,15 +1,20 @@
 @startuml
-  node ConteneurMagasin {
+  node Magasin {
+    component "KrakenD" 
     component "store_manager.py" 
-    database "MySQL"
+    database "MySQL 1"
     database "Redis"
-    "store_manager.py" <--> "MySQL"
+    "KrakenD" <--> "store_manager.py"
+    "store_manager.py" <--> "MySQL 1"
     "store_manager.py" <--> "Redis"
   }
 
-  node ConteneurFournisseur {
-    component "supplier_app.py" 
+  node ServicePaiement {
+    component "payment_service.py" 
+    database "MySQL 2"
+    "payment_service.py" <--> "MySQL 2"
   }
 
-  ConteneurMagasin <--> ConteneurFournisseur : HTTPS
+  "KrakenD" <--> "payment_service.py" : HTTPS
+
 @enduml
